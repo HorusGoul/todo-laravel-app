@@ -4,9 +4,9 @@
       <h1>Iniciar sesión</h1>
 
       <div class="input-group">
-        <input v-model="username" id="username" type="email" required placeholder="example@example.com"/>
-        <label for="username">
-          Usuario
+        <input v-model="email" id="email" type="email" required placeholder="example@example.com"/>
+        <label for="email">
+          Email
         </label>
       </div>
 
@@ -17,7 +17,7 @@
         </label>
       </div>
 
-      <button :disabled="!username || !password">
+      <button :disabled="!email || !password">
         Conectar
       </button>
     </form>
@@ -26,17 +26,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import AuthService, { ILoginData } from '@/AuthService';
+
 export default Vue.extend({
   name: 'login',
   data: () => ({
-    username: '',
+    email: '',
     password: ''
   }),
   methods: {
     onSubmit() {
-      const { username, password } = this;
+      const { email, password } = this;
 
-      console.log(username, password);
+      AuthService.login({ email, password });
     }
   }
 });

@@ -1,3 +1,4 @@
+import { AuthToken } from "@/AuthService";
 import * as axios from "axios";
 
 /**
@@ -26,8 +27,12 @@ class ApiService {
    * @param {string} authToken
    * @memberof ApiService
    */
-  public setAuthToken(authToken: string) {
-    this.http.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+  public setAuthToken(authToken: AuthToken) {
+    if (authToken) {
+      this.http.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+    } else {
+      this.removeAuthToken();
+    }
   }
 
   /**

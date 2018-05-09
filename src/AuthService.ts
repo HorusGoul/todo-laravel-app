@@ -5,8 +5,10 @@ const STORAGE_KEY = 'todo-laravel::token';
 
 type AuthTokenListener = (token?: string | null) => void;
 
+export type AuthToken = string | null;
+
 export interface ILoginData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -19,7 +21,13 @@ export interface ILoginData {
  */
 class AuthService {
   private listeners: AuthTokenListener[] = [];
-  private currentToken: string | null = null;
+  private currentToken: AuthToken = null;
+
+  public async init() {
+    const token: AuthToken = localStorage.getItem(STORAGE_KEY);
+
+    this.setToken(token);
+  }
 
   /**
    * Function that logs in a user.
@@ -28,9 +36,9 @@ class AuthService {
    */
   public async login(data: ILoginData) {
     try {
-      const res: AxiosResponse = await ApiService.post(`auth/login`, data);
+      const res: AxiosResponse = await ApiService.post(`login`, data);
 
-      this.setToken(res.data.token);
+      this.setToken(res.data.api_token);
     } catch (e) {
       throw e;
     }
@@ -43,10 +51,14 @@ class AuthService {
     this.removeToken();
   }
 
-  private setToken(token: string) {
+  public addAuthListener(listener: AuthTokenListener) {
+    this.listeners.push(listener);
+  }
+
+  private setToken(token: AuthToken) {
     this.currentToken = token;
 
-    localStorage.setItem(STORAGE_KEY, token);
+    localStorage.setItem(STORAGE_KEY, token as string);
     ApiService.setAuthToken(token);
     this.notifyListeners();
   }
