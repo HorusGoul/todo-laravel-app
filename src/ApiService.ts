@@ -12,7 +12,7 @@ class ApiService {
   private apiUrl: string;
 
   constructor() {
-    this.apiUrl = "http://homestead.test/api/";
+    this.apiUrl = process.env.VUE_APP_API_URL;
 
     // Create a http client using axios.
     this.http = axios.default.create({
