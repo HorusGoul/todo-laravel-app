@@ -12,7 +12,9 @@
       </button>
     </div>
 
-    <div class="todo-panel">
+    <task-editor class="panel" :create-task="createTask" />
+
+    <div class="panel">
       <todo-list :taskList="taskList" :delete-task="deleteTask"></todo-list>
     </div>
   </div>
@@ -24,12 +26,14 @@ import Vue from 'vue'
 import AuthService from '@/AuthService';
 import UserService,{ IUser } from '@/UserService';
 import TodoList from './TodoList.vue';
+import TaskEditor from './TaskEditor.vue';
 import TodoService,{ ITask } from '@/TodoService';
 
 export default Vue.extend({
   name: 'dashboard',
   components: {
-    TodoList
+    TodoList,
+    TaskEditor
   },
   data() {
     const user: IUser = null;
@@ -46,12 +50,25 @@ export default Vue.extend({
     async fetchTasks() {
       const tasks = await TodoService.getAll();
 
-      this.taskList = tasks;
+      this.setTasks(tasks);
     },
     async deleteTask(task: ITask) {
       await TodoService.delete(task);
 
-      this.taskList = this.taskList.filter(value => value !== task);
+      this.setTasks(this.taskList.filter(value => value !== task));
+    },
+    async createTask(task: ITask) {
+      const newTask = await TodoService.create(task);
+
+      this.setTasks([newTask, ...this.taskList]);
+    },
+    setTasks(tasks: ITask[]) {
+      this.taskList = tasks.sort((a, b) => {
+        const aDate = +new Date(a.created_at);
+        const bDate = +new Date(b.created_at);
+
+        return bDate - aDate;
+      });
     }
   },
   mounted() {
@@ -100,13 +117,12 @@ h1 {
   padding: 0 16px;
 }
 
-.todo-panel {
+.panel {
   background-color: #fff;
   max-width: 720px;
   margin: 16px auto;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  padding: 16px 0;
 }
 </style>
 
