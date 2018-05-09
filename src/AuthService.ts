@@ -12,6 +12,12 @@ export interface ILoginData {
   password: string;
 }
 
+export interface ISignUpData {
+  email: string;
+  password: string;
+  name: string;
+}
+
 /**
  * Class that has all the methods and functions
  * needed to handle the authorization with the
@@ -35,13 +41,20 @@ class AuthService {
    * @param data User credentials
    */
   public async login(data: ILoginData) {
-    try {
-      const res: AxiosResponse = await ApiService.post(`login`, data);
+    const res: AxiosResponse = await ApiService.post(`login`, data);
 
-      this.setToken(res.data.api_token);
-    } catch (e) {
-      throw e;
-    }
+    this.setToken(res.data.api_token);
+  }
+
+  /**
+   * Function that signs up a user.
+   *
+   * @param data New user's data
+   */
+  public async signup(data: ISignUpData) {
+    const res: AxiosResponse = await ApiService.post('signup', data);
+
+    this.setToken(res.data.api_token);
   }
 
   /**

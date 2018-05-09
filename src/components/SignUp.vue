@@ -1,7 +1,14 @@
 <template>
-  <div class="login">
+  <div class="signup">
     <form v-on:submit.prevent="onSubmit">
-      <h1>Iniciar sesión</h1>
+      <h1>Crear cuenta</h1>
+
+      <div class="input-group">
+        <input v-model="name" id="name" type="text" required placeholder="Paco Sanz"/>
+        <label for="name">
+          Nombre
+        </label>
+      </div>
 
       <div class="input-group">
         <input v-model="email" id="email" type="email" required placeholder="example@example.com"/>
@@ -17,39 +24,40 @@
         </label>
       </div>
 
-      <button :disabled="!email || !password">
-        Conectar
+      <button :disabled="!email || !password || !name">
+        Crear cuenta
       </button>
     </form>
 
     <div class="divider">— o —</div>
 
-    <router-link :to="{ name: 'signup' }" tag="button">Registro</router-link>
+    <router-link :to="{ name: 'login' }" tag="button">Iniciar sesión</router-link>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import AuthService, { ILoginData } from '@/AuthService';
+import AuthService, { ISignUpData } from '@/AuthService';
 
 export default Vue.extend({
-  name: 'login',
+  name: 'signup',
   data: () => ({
     email: '',
-    password: ''
+    password: '',
+    name: ''
   }),
   methods: {
     onSubmit() {
-      const { email, password } = this;
+      const { email, password, name } = this;
 
-      AuthService.login({ email, password });
+      AuthService.signup({ email, password, name });
     }
   }
 });
 </script>
 
 <style scoped>
-  .login {
+  .signup {
     padding: 16px;
     background-color: #fff;
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);

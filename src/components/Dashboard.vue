@@ -11,16 +11,24 @@
         Logout
       </button>
     </div>
+
+    
+    <todo-list :taskList="['asdasd']"></todo-list>
   </div>
+
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import AuthService from '@/AuthService';
 import UserService,{ IUser } from '@/UserService';
+import TodoList from './TodoList.vue';
 
 export default Vue.extend({
   name: 'dashboard',
+  components: {
+    TodoList
+  },
   data() {
     const user: IUser = null;
 
