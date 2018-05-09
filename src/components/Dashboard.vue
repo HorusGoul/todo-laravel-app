@@ -13,7 +13,7 @@
     </div>
 
     <div class="todo-panel">
-      <todo-list :taskList="taskList"></todo-list>
+      <todo-list :taskList="taskList" :delete-task="deleteTask"></todo-list>
     </div>
   </div>
 
@@ -24,7 +24,7 @@ import Vue from 'vue'
 import AuthService from '@/AuthService';
 import UserService,{ IUser } from '@/UserService';
 import TodoList from './TodoList.vue';
-import TodoService from '@/TodoService';
+import TodoService,{ ITask } from '@/TodoService';
 
 export default Vue.extend({
   name: 'dashboard',
@@ -47,6 +47,11 @@ export default Vue.extend({
       const tasks = await TodoService.getAll();
 
       this.taskList = tasks;
+    },
+    async deleteTask(task: ITask) {
+      await TodoService.delete(task);
+
+      this.taskList = this.taskList.filter(value => value !== task);
     }
   },
   mounted() {
