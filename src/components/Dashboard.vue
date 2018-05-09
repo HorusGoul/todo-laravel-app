@@ -4,7 +4,7 @@
       <h1>Todo-Laravel</h1>
 
       <span class="username">
-        {{ user && user.email }}
+        {{ user && user.name }}
       </span>
 
       <button class="logout" v-on:click="logout">
@@ -12,8 +12,9 @@
       </button>
     </div>
 
-    
-    <todo-list :taskList="['asdasd']"></todo-list>
+    <div class="todo-panel">
+      <todo-list :taskList="taskList"></todo-list>
+    </div>
   </div>
 
 </template>
@@ -23,6 +24,7 @@ import Vue from 'vue'
 import AuthService from '@/AuthService';
 import UserService,{ IUser } from '@/UserService';
 import TodoList from './TodoList.vue';
+import TodoService from '@/TodoService';
 
 export default Vue.extend({
   name: 'dashboard',
@@ -32,7 +34,7 @@ export default Vue.extend({
   data() {
     const user: IUser = null;
 
-    return { user };
+    return { user, taskList: [] };
   },
   methods: {
     logout() {
@@ -40,10 +42,16 @@ export default Vue.extend({
     },
     setUser(user: IUser) {
       this.user = user;
+    },
+    async fetchTasks() {
+      const tasks = await TodoService.getAll();
+
+      this.taskList = tasks;
     }
   },
   mounted() {
     UserService.addUserListener(this.setUser.bind(this));
+    this.fetchTasks();
   },
 });
 </script>
@@ -63,6 +71,7 @@ h1 {
   margin: 0;
   font-size: 16pt;
   padding: 0 16px;
+  color: #fff;
 }
 
 .logout {
@@ -84,6 +93,15 @@ h1 {
   color: rgba(255, 255, 255, 0.8);
   margin-left: auto;
   padding: 0 16px;
+}
+
+.todo-panel {
+  background-color: #fff;
+  max-width: 720px;
+  margin: 16px auto;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 16px 0;
 }
 </style>
 
