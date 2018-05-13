@@ -24,5 +24,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   justify-content: center;
+  max-width: 720px;
+  margin: 0 auto;
 }
 </style>

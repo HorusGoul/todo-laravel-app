@@ -2,7 +2,13 @@
   <div class="task-editor">
     <form v-on:submit.prevent="addTask">
       <div class="input-group">
-        <input v-model="content" id="content" type="text" required placeholder="Hacer un proyectillo de Laravel"/>
+        <auto-textarea 
+          v-model="content"
+          id="content" 
+          required 
+          placeholder="Hacer un proyectillo de Laravel" 
+          rows="1" />
+
         <label for="content">
           Nueva tarea
         </label>
@@ -15,8 +21,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import AutoTextarea from './AutoTextarea.vue';
+
 export default Vue.extend({
   name: 'task-editor',
+  components: {
+    AutoTextarea
+  },
   props: ['createTask'],
   data: () => ({
     content: ''
@@ -52,17 +63,18 @@ export default Vue.extend({
   font-size: 11pt;
 }
 
-.input-group input {
+.input-group textarea {
   padding: 8px 0;
   border: none;
   border-bottom: 2px solid #2c3e50;
+  font-size: 14pt;
 }
 
-.input-group input:focus {
+.input-group textarea:focus {
   border-color: #42b983;
 }
 
-.input-group input:focus ~ label {
+.input-group textarea:focus ~ label {
   color: #42b983;
 }
 

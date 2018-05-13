@@ -4,7 +4,11 @@
         <input type="checkbox" v-model="task.completed" />
       </div>
 
-      <input :disabled="task.completed || task.completed === 1" type="text" v-model="task.content" class="content" />
+      <auto-textarea 
+        :disabled="task.completed || task.completed === 1"
+        v-model="task.content"
+        class="content"
+        rows="1" />
       
       <button class="delete" v-on:click="deleteTask(task)">
         X
@@ -15,10 +19,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import TodoService from '@/TodoService';
+import AutoTextarea from './AutoTextarea.vue';
 import _ from 'lodash';
 
 export default Vue.extend({
   name: 'todo-task',
+  components: {
+    AutoTextarea
+  },
   props: ['task', 'deleteTask'],
   watch: {
     task: {
@@ -27,13 +35,16 @@ export default Vue.extend({
         TodoService.update(newTask);
       }, 250)
     }
-  }
+  },
 })
 </script>
 
 <style scoped>
 .task {
   display: flex;
+  background: #fff;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  margin: 8px 0;
 }
 
 .checkbox {
@@ -51,8 +62,10 @@ export default Vue.extend({
   line-height: 1.6;
   font-size: 14pt;
   border: none;
-  padding: 0;
+  padding: 16px;
   width: 0;
+  resize: none;
+  overflow: hidden;
 }
 
 .content:disabled {

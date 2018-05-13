@@ -14,9 +14,7 @@
 
     <task-editor class="panel" :create-task="createTask" />
 
-    <div class="panel">
-      <todo-list :taskList="taskList" :delete-task="deleteTask"></todo-list>
-    </div>
+    <todo-list :taskList="taskList" :delete-task="deleteTask"></todo-list>
   </div>
 
 </template>
