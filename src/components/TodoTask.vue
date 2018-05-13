@@ -1,18 +1,24 @@
 <template>
   <div class="task" v-bind:class="{ completed: task.completed }">
-      <div class="checkbox">
-        <input type="checkbox" v-model="task.completed" />
-      </div>
+      <div class="toolbar">
+        <div class="checkbox">
+          <input :id="'completed' + task.id" type="checkbox" v-model="task.completed" />
 
+          <label :for="'completed' + task.id">
+            Completada
+          </label>
+        </div>
+
+        <button class="delete" v-on:click="deleteTask(task)">
+          Borrar
+        </button>
+      </div>
+      
       <auto-textarea 
         :disabled="task.completed || task.completed === 1"
         v-model="task.content"
         class="content"
         rows="1" />
-      
-      <button class="delete" v-on:click="deleteTask(task)">
-        X
-      </button>
     </div>
 </template>
 
@@ -42,15 +48,31 @@ export default Vue.extend({
 <style scoped>
 .task {
   display: flex;
+  flex-direction: column;
   background: #fff;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
   margin: 8px 0;
+}
+
+.toolbar {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .checkbox {
   display: flex;
   padding: 0 16px;
   align-items: center;
+  user-select: none;
+}
+
+.checkbox > * {
+  cursor: pointer;
+}
+
+.checkbox > input {
+  margin-right: 8px;
 }
 
 .task.completed .content {
@@ -63,7 +85,6 @@ export default Vue.extend({
   font-size: 14pt;
   border: none;
   padding: 16px;
-  width: 0;
   resize: none;
   overflow: hidden;
 }
@@ -85,6 +106,10 @@ button {
 
 button:hover {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.delete {
+  margin-left: auto;
 }
 </style>
 
