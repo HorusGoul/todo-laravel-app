@@ -32,6 +32,8 @@ class AuthService {
   public async init() {
     const token: AuthToken = localStorage.getItem(STORAGE_KEY);
 
+    ApiService.http.interceptors.response.use(null, this.onApiResponseError.bind(this));
+
     this.setToken(token);
   }
 
@@ -85,6 +87,12 @@ class AuthService {
 
   private notifyListeners() {
     this.listeners.forEach((listener) => listener(this.currentToken));
+  }
+
+  private onApiResponseError(error: any) {
+    if (error.response.status === 401) {
+      this.removeToken();
+    }
   }
 }
 

@@ -8,7 +8,7 @@ import * as axios from "axios";
  * @class ApiService
  */
 class ApiService {
-  private http: axios.AxiosInstance;
+  public http: axios.AxiosInstance;
   private apiUrl: string;
 
   constructor() {
