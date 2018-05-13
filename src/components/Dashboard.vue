@@ -14,7 +14,21 @@
 
     <task-editor class="panel" :create-task="createTask" />
 
-    <todo-list :taskList="taskList" :delete-task="deleteTask"></todo-list>
+    <div class="toolbar panel">
+      <button @click="setAllFilter">
+        Todas
+      </button>
+
+      <button @click="setActiveFilter">
+        Activas
+      </button>
+
+      <button @click="setCompletedFilter">
+        Completadas
+      </button>
+    </div>
+
+    <todo-list :taskList="filteredTaskList" :delete-task="deleteTask"></todo-list>
   </div>
 
 </template>
@@ -26,6 +40,11 @@ import UserService,{ IUser } from '@/UserService';
 import TodoList from './TodoList.vue';
 import TaskEditor from './TaskEditor.vue';
 import TodoService,{ ITask } from '@/TodoService';
+import { create } from 'domain';
+
+const MODE_ALL = 'all';
+const MODE_COMPLETED = 'completed';
+const MODE_ACTIVE =  'active';
 
 export default Vue.extend({
   name: 'dashboard',
@@ -36,7 +55,7 @@ export default Vue.extend({
   data() {
     const user: IUser = null;
 
-    return { user, taskList: [] };
+    return { user, taskList: [], mode: 'all' };
   },
   methods: {
     logout() {
@@ -67,12 +86,37 @@ export default Vue.extend({
 
         return bDate - aDate;
       });
-    }
+    },
+    setCompletedFilter() {
+      this.mode = MODE_COMPLETED;
+    },
+    setActiveFilter() {
+      this.mode = MODE_ACTIVE;
+    },
+    setAllFilter() {
+      this.mode = MODE_ALL;
+    },
   },
   mounted() {
     UserService.addUserListener(this.setUser.bind(this));
     this.fetchTasks();
   },
+  computed: {
+    filteredTaskList: function (): ITask[] {
+      if (this.mode === 'completed') {
+        return this.taskList.filter(task => task.completed);
+      }
+
+      switch (this.mode) {
+        case MODE_ACTIVE:
+          return this.taskList.filter(task => !task.completed);
+        case MODE_COMPLETED: 
+          return this.taskList.filter(task => task.completed);
+        default:
+          return this.taskList;
+      }
+    }
+  }
 });
 </script>
 
@@ -121,6 +165,21 @@ h1 {
   margin: 16px auto;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  padding: 16px;
+  margin: 0;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #42b983;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>
 
